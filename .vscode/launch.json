@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CUDA Debug (Remote)",
+            "type": "cuda-gdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/TPSolver",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [{"name": "CUDA_VISIBLE_DEVICES", "value": "0"}],
+            "miDebuggerPath": "/usr/local/pace-apps/spack/packages/linux-rhel9-x86_64_v3/gcc-12.3.0/cuda-12.6.1-fgbhrk26npivybjj65zswagcf4zv6p2n/bin/cuda-gdb",
+        }
+    ]
+}

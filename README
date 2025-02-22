@@ -1,0 +1,34 @@
+### Basic usage:
+
+1) Load the cuda module:
+
+    ```
+    prompt% module load cuda
+    ```
+
+The default version of cuda may change over time as NVIDIA releases new versions (1-3 per year). We advise that users not write scripts that force a specific version unless there is a strong compatibility reason.
+
+2) Compile the example:
+
+    ```
+    prompt% make clean && make
+    ```
+
+    The Makefile contains many useful bits of information on how to compile a CUDA code
+
+3) Run if possible
+
+    ```
+    prompt% ./TPSolver
+    ```
+
+
+4) Submit the example to Slurm using the sbatch command:
+
+    ```
+    prompt% sbatch cuda.sbatch
+    ```
+
+
+
+    module load cuda && make clean && make && ./TPSolver
