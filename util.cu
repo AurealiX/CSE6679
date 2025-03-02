@@ -91,6 +91,7 @@ double* copy_vector(double* src, size_t size) {
     return dest;
 }
 
+
 // Function to print an int** matrix.
 void printIntMatrix(int **matrix, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
@@ -109,34 +110,4 @@ void printDoubleMatrix(double **matrix, int rows, int cols) {
         }
         printf("\n");
     }
-}
-
-// Implementation of duplicateTransportationProblem helper function.
-TransportationProblem* duplicateTransportationProblem(TransportationProblem* prob) {
-    if (!prob) return NULL;
-    
-    TransportationProblem* copy = createTransportationProblem(prob->numSupply, prob->numDemand);
-    if (!copy) return NULL;
-    
-    copy->numSupply = prob->numSupply;
-    copy->numDemand = prob->numDemand;
-    
-    // Copy supply and demand arrays.
-    memcpy(copy->supply, prob->supply, prob->numSupply * sizeof(double));
-    memcpy(copy->demand, prob->demand, prob->numDemand * sizeof(double));
-    
-    // Copy cost matrix.
-    for (int i = 0; i < prob->numSupply; i++) {
-        memcpy(copy->cost[i], prob->cost[i], prob->numDemand * sizeof(double));
-    }
-    
-    // Initialize solution and BFS matrices to zero.
-    for (int i = 0; i < prob->numSupply; i++) {
-        for (int j = 0; j < prob->numDemand; j++) {
-            copy->solution[i][j] = 0.0;
-            copy->BFS[i][j] = 0;
-        }
-    }
-    
-    return copy;
 }

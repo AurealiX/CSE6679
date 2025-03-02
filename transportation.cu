@@ -18,13 +18,14 @@ TransportationProblem* createTransportationProblem(int numSupply, int numDemand)
     return problem;
 }
 
-void destroyTransportationProblem(TransportationProblem *problem, int numSupply) {
+void destroyTransportationProblem(TransportationProblem *problem) {
     if (problem) {
         free(problem->supply);
         free(problem->demand);
-        free_matrix(problem->cost, numSupply);
-        free_matrix(problem->solution, numSupply);
-        free_matrix(problem->BFS,numSupply);
+        // Use the number of supply nodes stored in the structure
+        free_matrix(problem->cost, problem->numSupply);
+        free_matrix(problem->solution, problem->numSupply);
+        free_matrix(problem->BFS, problem->numSupply);
         free(problem);
     }
 }
