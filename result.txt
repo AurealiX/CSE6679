@@ -1,0 +1,77 @@
+Enter seed: 10
+Enter number of supply nodes: 5
+Enter number of demand nodes: 5
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.000004 seconds.
+Find initial solution in: 0.000004
+Initial solution feasibility is true, the objective value is 28.257973
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 0.000002 seconds.
+Phase 2 optimization completed in: 0.000002
+Final solution feasibility is true, the objective value is 28.257973
+
+Enter seed: 10
+Enter number of supply nodes: 1000
+Enter number of demand nodes: 1000
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 3.916966 seconds.
+Find initial solution in: 3.916966
+Initial solution feasibility is true, the objective value is 89.956000 
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 204.163321 seconds.
+Phase 2 optimization completed in: 204.163321
+Final solution feasibility is true, the objective value is 42.445118
+
+Enter seed: 10
+Enter number of supply nodes: 1000
+Enter number of demand nodes: 1000
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 4.158157 seconds.
+Find initial solution in: 4.158157 seconds
+Initial solution feasibility is true, the objective value is 81.250367
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 213.384100 seconds.
+Phase 2 optimization (CPU version) completed in: 213.384100 seconds
+After CPU MODI, feasibility is true, the objective value is 41.504988
+Phase 2 optimization (GPU version) completed in: 54.993518 seconds
+After GPU MODI, feasibility is true, the objective value is 41.504988
+Both CPU and GPU methods yield the same optimal objective value.
+
+Enter seed: 10
+Enter number of supply nodes: 50
+Enter number of demand nodes: 30
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.000397 seconds.
+Find initial solution in: 0.000397 seconds
+Initial solution feasibility is true, the objective value is 61.005823
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 0.001646 seconds.
+Phase 2 optimization (CPU version) completed in: 0.001646 seconds
+After CPU MODI, feasibility is true, the objective value is 42.074948
+Phase 2 optimization (GPU version) completed in: 0.198358 seconds
+After GPU MODI, feasibility is true, the objective value is 42.074948
+Both CPU and GPU methods yield the same optimal objective value.
+
+Enter seed: 10
+Enter number of supply nodes: 50
+Enter number of demand nodes: 50
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.000791 seconds.
+CPU VAM solution feasibility is true, objective value: 61.111697
+GPU VAM solver completed in 0.087664 seconds.
+GPU VAM solution feasibility is true, objective value: 61.111697
+Running Least Cost Method (Phase 1)...
+CPU LCM solver completed in 0.000280 seconds.
+LCM solution feasibility is true, objective value: 59.409157
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.000692 seconds.
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 0.004718 seconds.
+After CPU MODI, solution feasibility is true, objective value: 35.485278
+Running MODI Method on GPU for phase 2 optimization...
+Phase 2 optimization (GPU MODI) in: 0.125161 seconds
+After GPU MODI, solution feasibility is true, objective value: 35.485278
+Running Stepping Stone Method (SSM) for phase 2 optimization...
+CPU SSM solver completed in 0.924310 seconds.
+Phase 2 optimization (CPU SSM) in: 0.924310 seconds
+After CPU SSM, solution feasibility is true, objective value: 35.485278

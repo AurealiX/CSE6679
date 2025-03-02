@@ -32,3 +32,7 @@ The default version of cuda may change over time as NVIDIA releases new versions
 
 
     module load cuda && make clean && make && ./TPSolver
+
+
+5) Compile and run the algorithms locally:
+nvcc main.cu cpu_vam.cu cpu_lcm.cu cpu_modi.cu cpu_ssm.cu transportation.cu util.cu gpu_modi.cu gpu_vam.cu -o TPSolver.exe

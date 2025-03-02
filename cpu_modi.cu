@@ -1,4 +1,5 @@
 #include "cpu_modi.h"
+#include "modi_common.h"
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 
 
 // Helper function to check if a cell (r, c) is already in the path.
-static int inPath(int path[][2], int path_len, int r, int c) {
+int inPath(int path[][2], int path_len, int r, int c) {
     for (int i = 0; i < path_len; i++) {
         if (path[i][0] == r && path[i][1] == c)
             return 1;
@@ -20,7 +21,7 @@ static int inPath(int path[][2], int path_len, int r, int c) {
 // move_dir: 0 = horizontal move next; 1 = vertical move next.
 // When a loop is found (with at least 4 cells, even in length, returning to the start),
 // the loop length is stored in loop_length.
-static int dfs_find_loop(TransportationProblem *problem, int m, int n,
+int dfs_find_loop(TransportationProblem *problem, int m, int n,
                          int start_row, int start_col,
                          int curr_row, int curr_col,
                          int move_dir, int depth,
@@ -70,7 +71,7 @@ static int dfs_find_loop(TransportationProblem *problem, int m, int n,
 
 // Attempts to find a closed loop for the candidate cell (start_row, start_col).
 // On success, copies the loop into 'loop' and sets loop_length.
-static int findLoop(TransportationProblem *problem, int m, int n,
+int findLoop(TransportationProblem *problem, int m, int n,
                     int start_row, int start_col, int loop[][2], int *loop_length) {
     int path[m+n][2];
     path[0][0] = start_row;
@@ -96,7 +97,7 @@ void epsilonAllocation(TransportationProblem* problem, double epsilon){
 
 // Compute the dual potentials u (for rows) and v (for columns) for the current basic solution.
 // Basic cells are those with an allocation greater than 1e-5.
-static void computePotentials(TransportationProblem *problem, double *u, double *v, int m, int n) {
+void computePotentials(TransportationProblem *problem, double *u, double *v, int m, int n) {
     // Initialize potentials with a sentinel value.
     for (int i = 0; i < m; i++) {
         u[i] = FLT_MAX;
