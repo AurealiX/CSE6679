@@ -7,9 +7,9 @@ extern "C" {
 
 #include "transportation.h"
 
-// CPU implementation of the Stepping Stone Method for Phase 2 optimization.
-// It takes as input a TransportationProblem instance (with a valid initial BFS)
-// and returns the elapsed time (in seconds) to reach optimality.
+// CPU implementation of the Accelerated Stepping Stone Method for Phase 2 optimization.
+// This function takes as input a TransportationProblem instance (with a valid initial BFS)
+// and returns the elapsed time (in seconds) to reach optimality (or complete candidate evaluation).
 double ssmCPUSolve(TransportationProblem *problem);
 
 #ifdef __cplusplus

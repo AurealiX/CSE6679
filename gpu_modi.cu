@@ -280,10 +280,12 @@ double modiGPUSolve(TransportationProblem *problem) {
         
         // On the host: find a closed loop (cycle) for the candidate cell.
         int loop_max = m + n;
-        int loop[loop_max][2];
+        int (*loop)[2] = new int[loop_max][2];
         int loop_length = 0;
-        if (!findLoop(problem, m, n, best_i, best_j, loop, &loop_length))
+        if (!findLoop(problem, m, n, best_i, best_j, loop, &loop_length)) {
+            delete[] loop;
             break;
+        }
         
         // Determine theta: the minimum allocation among negative cells in the loop.
         double theta = DBL_MAX;
@@ -316,6 +318,9 @@ double modiGPUSolve(TransportationProblem *problem) {
         problem->BFS[best_i][best_j] = 1;
         if (problem->solution[best_i][best_j] < 1e-10)
             problem->solution[best_i][best_j] += 1e-10;
+        
+        // Free the dynamically allocated loop memory.
+        delete[] loop;
     }
     
     // Cleanup device memory.

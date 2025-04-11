@@ -75,3 +75,35 @@ Running Stepping Stone Method (SSM) for phase 2 optimization...
 CPU SSM solver completed in 0.924310 seconds.
 Phase 2 optimization (CPU SSM) in: 0.924310 seconds
 After CPU SSM, solution feasibility is true, objective value: 35.485278
+
+Enter seed: 10
+Enter number of supply nodes: 100
+Enter number of demand nodes: 100
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.008000 seconds.
+CPU VAM solution feasibility is true, objective value: 77.618811
+GPU VAM solver completed in 0.138000 seconds.
+GPU VAM solution feasibility is true, objective value: 77.618811
+Running Least Cost Method (Phase 1)...
+CPU LCM solver completed in 0.002000 seconds.
+CPU LCM solution feasibility is true, objective value: 89.827924
+Running GPU Least Cost Method (Phase 1) in C++...
+GPU LCM solver completed in 0.020000 seconds.
+GPU LCM solution feasibility is true, objective value: 89.827924
+Running Vogel's Approximation Method (Phase 1)...
+CPU VAM solver completed in 0.006000 seconds.
+Running MODI Method for phase 2 optimization...
+CPU MODI solver completed in 0.060000 seconds.
+After CPU MODI, solution feasibility is true, objective value: 43.097920
+Running MODI Method on GPU for phase 2 optimization...
+Phase 2 optimization (GPU MODI) in: 0.399000 seconds
+After GPU MODI, solution feasibility is true, objective value: 43.097920
+Running Stepping Stone Method (SSM) for phase 2 optimization...
+CPU SSM solver completed in 47.168000 seconds.
+Phase 2 optimization (CPU SSM) in: 47.168000 seconds
+After CPU SSM, solution feasibility is true, objective value: 43.097920
+Running GPU Stepping Stone Method (SSM) for phase 2 optimization...
+SSM: Best candidate has reduced cost -0.488403 (candidate index 0).
+GPU SSM solver completed in 0.004000 seconds.
+Phase 2 optimization (GPU SSM) in: 0.004000 seconds
+After GPU SSM, solution feasibility is true, objective value: 77.618811

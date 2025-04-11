@@ -71,18 +71,20 @@ int dfs_find_loop(TransportationProblem *problem, int m, int n,
 
 // Attempts to find a closed loop for the candidate cell (start_row, start_col).
 // On success, copies the loop into 'loop' and sets loop_length.
-int findLoop(TransportationProblem *problem, int m, int n,
-                    int start_row, int start_col, int loop[][2], int *loop_length) {
-    int path[m+n][2];
+int findLoop(TransportationProblem *problem, int m, int n, int start_row, int start_col, int loop[][2], int *loop_length) {
+    int (*path)[2] = new int[m + n][2];
     path[0][0] = start_row;
     path[0][1] = start_col;
     // int movedir=random()%2;
     int movedir=0;
-    if (dfs_find_loop(problem, m, n, start_row, start_col, start_row, start_col, movedir, 0, path, loop_length)) {
-        memcpy(loop, path, (*loop_length) * 2 * sizeof(int));
-        return 1;
-    }
-    return 0;
+    if (dfs_find_loop(problem, m, n, start_row, start_col,
+        start_row, start_col, movedir, 0, path, loop_length)) {
+            memcpy(loop, path, (*loop_length) * 2 * sizeof(int));
+            delete[] path;
+            return 1;
+        }
+        delete[] path;
+        return 0;
 }
 
 // Prevent degeneracy
@@ -135,14 +137,13 @@ double modiCPUSolve(TransportationProblem *problem) {
     printf("Running MODI Method for phase 2 optimization...\n");
     clock_t modi_start_time = clock();
 
-    // epsilonAllocation(problem,1e-10);
     int m = problem->numSupply;
     int n = problem->numDemand;
-
-    // Allocate arrays for the dual potentials.
+    
+    // Allocate arrays for dual potentials.
     double *u = (double*)malloc(m * sizeof(double));
     double *v = (double*)malloc(n * sizeof(double));
-
+    
     int optimal = 0;
     while (!optimal) {
         // Step 1: Compute potentials based on the current basic solution.
@@ -153,10 +154,12 @@ double modiCPUSolve(TransportationProblem *problem) {
         int best_i = -1, best_j = -1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (problem->BFS[i][j]==1)
+                if (problem->BFS[i][j] == 1)
                     continue; // Skip basic cells.
                 double delta = problem->cost[i][j] - (u[i] + v[j]);
-                if (delta < bestDelta || (delta <= bestDelta+1e-10 && (i<best_i||(i==best_i&& j<best_j)))) {
+                // Choose the cell with the most negative delta. Tie break by lower index.
+                if (delta < bestDelta ||
+                   (delta <= bestDelta + 1e-10 && (i < best_i || (i == best_i && j < best_j)))) {
                     bestDelta = delta;
                     best_i = i;
                     best_j = j;
@@ -171,55 +174,53 @@ double modiCPUSolve(TransportationProblem *problem) {
         }
         
         // Step 3: For the candidate cell (best_i, best_j), find a closed loop.
-        int loop[m+n][2];
+        // Dynamically allocate a 2D array to store the loop.
+        int (*loop_ptr)[2] = new int[m + n][2];
         int loop_length = 0;
-        if (!findLoop(problem, m, n, best_i, best_j, loop, &loop_length)) {
+        // IMPORTANT: Pass best_i and best_j as the candidate cell.
+        if (!findLoop(problem, m, n, best_i, best_j, loop_ptr, &loop_length)) {
             printf("No loop found for candidate cell (%d, %d) with reduced cost %f.\n", best_i, best_j, bestDelta);
+            delete[] loop_ptr;
             break;
         }
         
-        // Step 4: Determine theta, the maximum feasible adjustment,
-        // which is the minimum allocation among the cells in the loop with negative signs.
+        // Step 4: Determine theta, the maximum adjustment possible.
         double theta = FLT_MAX;
-        int sign = -1; // Candidate cell is the plus position; subsequent positions alternate.
+        int sign = -1; // Starting sign (candidate cell is +
         for (int k = 1; k < loop_length; k++) {
             if (sign < 0) {
-                int r = loop[k][0];
-                int c = loop[k][1];
+                int r = loop_ptr[k][0];
+                int c = loop_ptr[k][1];
                 if (problem->solution[r][c] < theta)
                     theta = problem->solution[r][c];
             }
             sign = -sign;
         }
-        // printf("Candidate cell (%d, %d)\n", best_i, best_j);
-        // printf("Improve the objective by %f, delta=%f, theta=%f\n", -bestDelta*theta, bestDelta, theta);
-
-
-        // Step 5: Adjust allocations along the loop.
+        
+        // Step 5: Update allocations along the closed loop.
         sign = 1;
         for (int k = 0; k < loop_length; k++) {
-            int r = loop[k][0];
-            int c = loop[k][1];
-            // printf("(%d,%d)->(%f, %d)  ",r,c,problem->solution[r][c],problem->BFS[r][c]);
+            int r = loop_ptr[k][0];
+            int c = loop_ptr[k][1];
             if (sign > 0)
                 problem->solution[r][c] += theta;
-            else{
-                if(problem->solution[r][c]==theta)
-                    problem->BFS[r][c]=0;
+            else {
+                if (problem->solution[r][c] == theta)
+                    problem->BFS[r][c] = 0;
                 problem->solution[r][c] -= theta;
             }
             sign = -sign;
         }
-        // printf("\n");
-        // Update BFS
-        problem->BFS[best_i][best_j]=1;
-        if(problem->solution[best_i][best_j]<1e-10)
-            problem->solution[best_i][best_j]+=1e-10;
+        // Mark the candidate cell as a basic cell.
+        problem->BFS[best_i][best_j] = 1;
+        if (problem->solution[best_i][best_j] < 1e-10)
+            problem->solution[best_i][best_j] += 1e-10;
+        
+        delete[] loop_ptr;  // Free the allocated loop array.
     }
     
     free(u);
     free(v);
-    // Calculate and print the elapsed time.
     double elapsed_time = (double)(clock() - modi_start_time) / CLOCKS_PER_SEC;
     printf("CPU MODI solver completed in %f seconds.\n", elapsed_time);
     return elapsed_time;
