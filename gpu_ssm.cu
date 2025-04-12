@@ -94,13 +94,13 @@ __device__ bool findLoopGPU(const double *d_cost, const int *d_BFS,
     const int MAX_QUEUE = 1024;
     int q_rows[MAX_QUEUE];
     int q_cols[MAX_QUEUE];
-    int parent[MAX_QUEUE];  // Note: This variable is set but not used later.
+    // int parent[MAX_QUEUE];  // Note: This variable is set but not used later.
     int depth[MAX_QUEUE];
     int front = 0, rear = 0;
     // Enqueue the starting cell (i,j)
     q_rows[rear] = i;
     q_cols[rear] = j;
-    parent[rear] = -1;
+    // parent[rear] = -1;
     depth[rear] = 0;
     rear++;
     
@@ -132,7 +132,7 @@ __device__ bool findLoopGPU(const double *d_cost, const int *d_BFS,
             if (!alreadyVisited) {
                 q_rows[rear] = curRow;
                 q_cols[rear] = c;
-                parent[rear] = front;
+                // parent[rear] = front;
                 depth[rear] = curDepth + 1;
                 rear++;
             }
@@ -154,7 +154,7 @@ __device__ bool findLoopGPU(const double *d_cost, const int *d_BFS,
             if (!alreadyVisited) {
                 q_rows[rear] = r;
                 q_cols[rear] = curCol;
-                parent[rear] = front;
+                // parent[rear] = front;
                 depth[rear] = curDepth + 1;
                 rear++;
             }
