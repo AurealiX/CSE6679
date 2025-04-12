@@ -88,8 +88,8 @@ int main() {
     TransportationProblem* base_problem = createTransportationProblem(num_supply, num_demand);
     generateRandomInstance(base_problem, num_supply, num_demand, max_supply, 0, max_cost, seed);
     // Compute the BFS using CPU VAM.
-    vamCPUSolve(base_problem);
-
+    //vamCPUSolve(base_problem);
+    lcmCPUSolve(base_problem); // Use LCM to compute the BFS.
     // Now clone the BFS-computed instance for each Phase 2 test.
     
     // CPU MODI test.
@@ -128,3 +128,4 @@ int main() {
     
     return 0;
 }
+
