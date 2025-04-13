@@ -47,64 +47,80 @@ int main() {
     scanf("%d", &num_demand);
     int max_supply = num_supply + num_demand;
     
-    // New: 4-digit binary mode (VAM, LCM, MODI, SSM)
+    // New: 4-digit binary mode (phase1_alg, phase1_hw, phase2_alg, phase2_hw)
+    // phase1_alg: 0=VAM, 1=LCM
+    // phase1_hw: 0=CPU, 1=GPU
+    // phase2_alg: 0=MODI, 1=SSM
+    // phase2_hw: 0=CPU, 1=GPU
     char mode[5];
-    printf("Enter 4-digit binary mode (VAM LCM MODI SSM): ");
+    printf("Enter 4-digit binary mode:\n");
+    printf("  First digit: 0=VAM, 1=LCM for phase 1\n");
+    printf("  Second digit: 0=CPU, 1=GPU for phase 1\n");
+    printf("  Third digit: 0=MODI, 1=SSM for phase 2\n");
+    printf("  Fourth digit: 0=CPU, 1=GPU for phase 2\n");
+    printf("Mode: ");
     scanf("%4s", mode);
     
-    double vamTime = 0, lcmTime = 0, modiTime = 0, ssmTime = 0;
+    double phase1Time = 0, phase2Time = 0;
     TransportationProblem* inst;
+    const char* phase1_method;
+    const char* phase2_method;
+    double (*phase1_func)(TransportationProblem*);
+    double (*phase2_func)(TransportationProblem*);
     
-    // Phase 1: VAM test
+    // Determine phase 1 algorithm and hardware
+    if (mode[0] == '0') { // VAM
+        if (mode[1] == '0') { // CPU
+            phase1_method = "VAM (CPU)";
+            phase1_func = vamCPUSolve;
+        } else { // GPU
+            phase1_method = "VAM (GPU)";
+            phase1_func = gpuVamSolve;
+        }
+    } else { // LCM
+        if (mode[1] == '0') { // CPU
+            phase1_method = "LCM (CPU)";
+            phase1_func = lcmCPUSolve;
+        } else { // GPU
+            phase1_method = "LCM (GPU)";
+            phase1_func = lcmGPUSolve;
+        }
+    }
+    
+    // Determine phase 2 algorithm and hardware
+    if (mode[2] == '0') { // MODI
+        if (mode[3] == '0') { // CPU
+            phase2_method = "MODI (CPU)";
+            phase2_func = modiCPUSolve;
+        } else { // GPU
+            phase2_method = "MODI (GPU)";
+            phase2_func = modiGPUSolve;
+        }
+    } else { // SSM
+        if (mode[3] == '0') { // CPU
+            phase2_method = "SSM (CPU)";
+            phase2_func = ssmCPUSolve;
+        } else { // GPU
+            phase2_method = "SSM (GPU)";
+            phase2_func = ssmGPUSolve;
+        }
+    }
+    
+    // Phase 1: Initial solution
     inst = createTransportationProblem(num_supply, num_demand);
     generateRandomInstance(inst, num_supply, num_demand, max_supply, 0, max_cost, seed);
-    if (mode[0] == '0') {
-        vamTime = solveAndReport(inst, "CPU VAM", vamCPUSolve);
-    } else {
-        vamTime = solveAndReport(inst, "GPU VAM", gpuVamSolve);
-    }
-    destroyTransportationProblem(inst);
+    printf("Phase 1: %s\n", phase1_method);
+    phase1Time = solveAndReport(inst, phase1_method, phase1_func);
     
-    // Phase 1: LCM test
-    inst = createTransportationProblem(num_supply, num_demand);
-    generateRandomInstance(inst, num_supply, num_demand, max_supply, 0, max_cost, seed);
-    if (mode[1] == '0') {
-        lcmTime = solveAndReport(inst, "CPU LCM", lcmCPUSolve);
-    } else {
-        lcmTime = solveAndReport(inst, "GPU LCM", lcmGPUSolve);
-    }
-    destroyTransportationProblem(inst);
-    
-    // Phase 2: Use one base instance for MODI and SSM.
-    TransportationProblem* base_problem = createTransportationProblem(num_supply, num_demand);
-    generateRandomInstance(base_problem, num_supply, num_demand, max_supply, 0, max_cost, seed);
-    // Base BFS computed using CPU LCM (unchanged)
-    lcmCPUSolve(base_problem);
-    
-    // Phase 2: MODI test
-    inst = cloneTransportationProblem(base_problem);
-    if (mode[2] == '0') {
-        modiTime = solveAndReport(inst, "CPU MODI", modiCPUSolve);
-    } else {
-        modiTime = solveAndReport(inst, "GPU MODI", modiGPUSolve);
-    }
-    destroyTransportationProblem(inst);
-    
-    // Phase 2: SSM test
-    inst = cloneTransportationProblem(base_problem);
-    if (mode[3] == '0') {
-        ssmTime = solveAndReport(inst, "CPU SSM", ssmCPUSolve);
-    } else {
-        ssmTime = solveAndReport(inst, "GPU SSM", ssmGPUSolve);
-    }
-    destroyTransportationProblem(inst);
-    
-    destroyTransportationProblem(base_problem);
+    // Phase 2: Optimize from initial solution
+    printf("Phase 2: %s\n", phase2_method);
+    phase2Time = solveAndReport(inst, phase2_method, phase2_func);
     
     // Final times
-    printf("Times:\nVAM: %f sec\nLCM: %f sec\n", vamTime, lcmTime);
-    printf("MODI (%s): %f sec\n", mode[2] == '0' ? "CPU" : "GPU", modiTime);
-    printf("SSM (%s): %f sec\n", mode[3] == '0' ? "CPU" : "GPU", ssmTime);
+    printf("Time: Phase 1: %f sec, Phase 2: %f sec\n", phase1Time, phase2Time);
+    
+    // Clean up
+    destroyTransportationProblem(inst);
     
     return 0;
 }
