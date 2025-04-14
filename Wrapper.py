@@ -23,7 +23,7 @@ class TPSolverGUI:
         text_font.configure(size=16)
         
         # Configure matplotlib to use larger fonts
-        plt.rcParams.update({'font.size': 16})
+        plt.rcParams.update({'font.size': 14})
         
         # Polynomial models for execution time prediction
         self.models = {
